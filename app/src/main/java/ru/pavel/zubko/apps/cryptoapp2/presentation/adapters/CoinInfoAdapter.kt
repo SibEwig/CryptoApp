@@ -6,13 +6,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import ru.pavel.zubko.apps.cryptoapp2.R
-import ru.pavel.zubko.apps.cryptoapp2.data.network.model.CoinInfoDto
+import ru.pavel.zubko.apps.cryptoapp2.data.network.ApiFactory.BASE_IMAGE_URL
 import ru.pavel.zubko.apps.cryptoapp2.databinding.ItemCoinInfoBinding
+import ru.pavel.zubko.apps.cryptoapp2.domain.CoinInfo
+import ru.pavel.zubko.apps.cryptoapp2.utills.convertTimestampToTime
 import kotlin.text.format
 
 class CoinInfoAdapter(private val context: Context) : RecyclerView.Adapter<CoinInfoAdapter.CoinInfoViewHolder>() {
 
-    var coinInfoList: List<CoinInfoDto> = listOf()
+    var coinInfoList: List<CoinInfo> = listOf()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -40,8 +42,8 @@ class CoinInfoAdapter(private val context: Context) : RecyclerView.Adapter<CoinI
                 val lastUpdateTemplate = context.resources.getString(R.string.last_update_template)
                 binding.tvSymbols.text = String.format(symbolsTemplate, fromSymbol, toSymbol)
                 binding.tvPrice.text = price
-                binding.tvLastUpdate.text = String.format(lastUpdateTemplate, getFormattedTime())
-                Picasso.get().load(getFullImageUrl()).into(binding.ivLogoCoin)
+                binding.tvLastUpdate.text = String.format(lastUpdateTemplate, convertTimestampToTime(lastUpdate))
+                Picasso.get().load(BASE_IMAGE_URL + imageUrl).into(binding.ivLogoCoin)
                 itemView.setOnClickListener {
                     onCoinClickListener?.onCoinClick(this)
                 }
@@ -52,6 +54,6 @@ class CoinInfoAdapter(private val context: Context) : RecyclerView.Adapter<CoinI
     inner class CoinInfoViewHolder(val binding: ItemCoinInfoBinding) : RecyclerView.ViewHolder(binding.root)
 
     interface OnCoinClickListener {
-        fun onCoinClick(coinPriceInfo: CoinInfoDto)
+        fun onCoinClick(coinPriceInfo: CoinInfo)
     }
 }
