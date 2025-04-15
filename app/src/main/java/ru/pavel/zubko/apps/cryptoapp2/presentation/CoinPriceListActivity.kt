@@ -2,10 +2,9 @@ package ru.pavel.zubko.apps.cryptoapp2.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import ru.pavel.zubko.apps.cryptoapp2.R
 import ru.pavel.zubko.apps.cryptoapp2.databinding.ActivityCoinPriceListBinding
-import ru.pavel.zubko.apps.cryptoapp2.domain.CoinInfo
 import ru.pavel.zubko.apps.cryptoapp2.presentation.adapters.CoinInfoAdapter
 
 class CoinPriceListActivity : AppCompatActivity() {
@@ -21,18 +20,32 @@ class CoinPriceListActivity : AppCompatActivity() {
         binding = ActivityCoinPriceListBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val adapter = CoinInfoAdapter(this)
-        adapter.onCoinClickListener = object : CoinInfoAdapter.OnCoinClickListener {
-            override fun onCoinClick(coinPriceInfo: CoinInfo) {
-                val intent = CoinDetailActivity.Companion.newIntent(
-                    this@CoinPriceListActivity,
-                    coinPriceInfo.fromSymbol
-                )
-                startActivity(intent)
-            }
+        adapter.onCoinClickListener = {
+              if (isOnePaneMode()) {
+                  launchDetailActivity(it.fromSymbol)
+              } else {
+                  launchDetailFragment(it.fromSymbol)
+              }
         }
         binding.rvCoinPriceList.adapter = adapter
-        coinViewModel.coinInfoList.observe(this, Observer {
-            adapter.coinInfoList = it
-        })
+        coinViewModel.coinInfoList.observe(this) {
+            adapter.submitList(it)
+        }
+    }
+
+    private fun isOnePaneMode() = binding.fragmentContainer == null
+
+    private fun launchDetailActivity(fromSymbol: String) {
+        val intent = CoinDetailActivity.newIntent(this, fromSymbol)
+        startActivity(intent)
+    }
+
+    private fun launchDetailFragment(fromSymbol: String) {
+        supportFragmentManager.popBackStack()
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container, CoinDetailFragment.newInstance(fromSymbol))
+            .addToBackStack(null)
+            .commit()
     }
 }
