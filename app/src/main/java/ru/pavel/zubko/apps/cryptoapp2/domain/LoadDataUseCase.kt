@@ -1,6 +1,8 @@
 package ru.pavel.zubko.apps.cryptoapp2.domain
 
-class LoadDataUseCase(
+import javax.inject.Inject
+
+class LoadDataUseCase @Inject constructor(
     private val repository: CoinRepository
 ) {
 

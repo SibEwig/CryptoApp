@@ -1,6 +1,8 @@
 package ru.pavel.zubko.apps.cryptoapp2.domain
 
-class GetCoinInfoListUseCase(
+import javax.inject.Inject
+
+class GetCoinInfoListUseCase @Inject constructor(
     private val repository: CoinRepository
 ) {
 
