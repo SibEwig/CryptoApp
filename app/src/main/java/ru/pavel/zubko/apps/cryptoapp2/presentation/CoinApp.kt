@@ -3,13 +3,13 @@ package ru.pavel.zubko.apps.cryptoapp2.presentation
 import android.app.Application
 import androidx.work.Configuration
 import ru.pavel.zubko.apps.cryptoapp2.di.DaggerApplicationComponent
-import ru.pavel.zubko.apps.cryptoapp2.workers.RefreshDataWorkerFactory
+import ru.pavel.zubko.apps.cryptoapp2.workers.CoinWorkerFactory
 import javax.inject.Inject
 
 class CoinApp : Application(), Configuration.Provider {
 
     @Inject
-    lateinit var workerFactory: RefreshDataWorkerFactory
+    lateinit var workerFactory: CoinWorkerFactory
 
     val component by lazy {
         DaggerApplicationComponent.factory().create(this)
